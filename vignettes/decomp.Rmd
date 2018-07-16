@@ -1,0 +1,51 @@
+---
+title: "Decomposition of Sequences into Slices "
+author: "Sam"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Decomp}
+  %\VignetteEngine{knitr::knitr}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Decomposition of Sequences into Slices
+The input to the routine \code{decomp} should be a vector containing a monotonically increasing 
+sequence of positive integers. Error checking is not comprehensive. Any sequence that contains 
+zero or has repeated elements is likely to result in a segfault. 
+
+```{r}
+library(rSeqSliceDecomp)
+x <- c(2, 4, 6, 8, 10, 15, 20, 25, 30)
+s <- decomp(x)
+s
+```
+
+The algorithm finds the longest slice and adds it to the output set. When no slice 
+longer than three remains, it groups the remaining points in pairs and (if an 
+odd number of points remain) one singleton.
+
+```{r}
+library(rSeqSliceDecomp)
+x <- c(10, 11, 12, 20, 21, 22, 30, 31, 32)
+s <- decomp(x)
+s
+x <- c(10, 11, 12, 20, 21, 22, 30, 31, 32, 40, 41, 42)
+s <- decomp(x)
+s
+```
+
+### Note: R slices and numpy slices
+R slices and numpy slices differ in two ways. (1) R indices begin at 1 and 
+numpy indices begin at 0 and (2) if `stop-start` is a multiple of `step`,
+R slices include `stop` and numpy slices do not.
+
+Since this is an R package, all slices are R slices. To use them with 
+`h5pyd` it will be necessary to modify them.
